@@ -116,6 +116,7 @@ vec3 gradient(vec3 pos)
 	return vec3(dist(pos + dx) - dist(pos - dx), dist(pos + dy) - dist(pos - dy), dist(pos + dz) - dist(pos - dz));
 }
 
+
 __global__
 void render(unsigned char pixels[W*H], Camera camera)
 {
@@ -139,11 +140,13 @@ void render(unsigned char pixels[W*H], Camera camera)
 		vec3 p = camera.p0(x, y);
 
 		pixels[k] = 0x00;
+		float d;
 		for (unsigned int t = 0; t < 150; t++)
 		{	
-			p = p + dir * dist(p);
+			d = dist(p);
+			p = p + dir * d;
 
-			if (dist(p) < 0.01)
+			if (d < 0.01)
 			{
 				float light = dot(norm(gradient(p)), norm(vec3(-1.0f, 1.0f, 1.0f)));
 				pixels[k] = 0xff * (0.5f + light * 0.5f) * (0.5f + light * 0.5f) * (0.5f + light * 0.5f);
